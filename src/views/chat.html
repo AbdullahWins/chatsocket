@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Real-Time Chat</title>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form id="messageForm">
+      <input id="messageInput" autocomplete="off" /><button id="sendButton">
+        Send
+      </button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      const socket = io();
+
+      socket.on("message", (message) => {
+        $("#messages").append(
+          $("<li>").text(message.text + " - " + message.timestamp)
+        );
+      });
+
+      $("#messageForm").submit(function (e) {
+        e.preventDefault(); // Prevent the form from submitting and refreshing the page
+        const message = $("#messageInput").val();
+        socket.emit("message", message);
+        $("#messageInput").val("");
+      });
+    </script>
+  </body>
+</html>
